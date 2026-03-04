@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "room-booking"
+version = "0.1.0"
+description = "Meeting room booking API"
+authors = ["sexerk"]
+package-mode = false
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.110"
+uvicorn = "^0.29"
+sqlalchemy = "^2.0"
+alembic = "^1.13"
+asyncpg = "^0.29"
+pydantic = { version = "^2.2", extras = ["email"] }
+pydantic-settings = "^2.2"
+python-multipart = "^0.0.9"
+python-dotenv = "^1.0"
+passlib = "^1.7"
+python-jose = "^3.3"
+redis = "^5.0"
+celery = "^5.3"
+psycopg2-binary = "^2.9"
+httpx = "^0.27"
+pytest = "^8.0"
+pytest-asyncio = "^0.23"
+
+[tool.poetry.group.dev.dependencies]
+ruff = { version = "^0.15.1", optional = true }
+mypy = { version = "^1.5.1", optional = true }
+pre-commit = { version = "^3.3.3", optional = true }
+
+[build-system]
+requires = ["poetry-core>=1.5.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

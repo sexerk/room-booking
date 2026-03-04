@@ -1,0 +1,22 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY pyproject.toml poetry.lock ./
+
+RUN pip install poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi --no-root
+
+COPY . .
+
+RUN adduser --disabled-password --gecos '' appuser
+RUN chown -R appuser:appuser /app
+
+USER appuser
+
+CMD ["celery", "-A", "app.tasks.worker", "worker", "--loglevel=info"]

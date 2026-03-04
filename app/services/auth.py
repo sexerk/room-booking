@@ -1,4 +1,3 @@
-from datetime import timedelta
 from typing import Optional, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.user import UserRepository

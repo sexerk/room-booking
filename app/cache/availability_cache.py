@@ -1,6 +1,6 @@
 import hashlib
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional
 from app.cache.redis_client import redis_client
 
 

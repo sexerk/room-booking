@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional, Union, Dict, Any
+from typing import Optional, Dict, Any
 from jose import jwt
 from passlib.context import CryptContext
 from app.core.config import settings

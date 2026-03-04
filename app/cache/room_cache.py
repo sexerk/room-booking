@@ -1,8 +1,7 @@
 import hashlib
 import json
 from typing import Optional, List, Any
-from app.cache.redis_client import redis_client, get_redis
-from app.core.config import settings
+from app.cache.redis_client import redis_client
 
 
 class RoomCache:

@@ -2,7 +2,6 @@ import asyncio
 import logging
 from datetime import datetime, timedelta, timezone
 from celery import Task
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.tasks.worker import celery_app
 from app.db.session import async_session_maker
 from app.services.booking import BookingService

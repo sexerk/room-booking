@@ -11,6 +11,7 @@ from app.main import app
 from app.db.base import Base
 from app.db.session import get_db
 from app.core.config import settings
+import os
 
 TEST_DATABASE_URL = str(settings.DATABASE_URL).replace("room_booking", "test_room_booking")
 TEST_DATABASE_URL_SYNC = TEST_DATABASE_URL.replace("postgresql+asyncpg", "postgresql")
@@ -18,8 +19,10 @@ TEST_DATABASE_URL_SYNC = TEST_DATABASE_URL.replace("postgresql+asyncpg", "postgr
 
 def _setup_test_db():
     conn = psycopg2.connect(
-        host="db", port=5432,
-        user="postgres", password="postgres",
+        host=os.getenv("DATABASE_HOST", "db"),
+        port=int(os.getenv("DATABASE_PORT", "5432")),
+        user=os.getenv("POSTGRES_USER", "postgres"),
+        password=os.getenv("POSTGRES_PASSWORD", "postgres"),
         database="postgres"
     )
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)

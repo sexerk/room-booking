@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict, validator
+from pydantic import BaseModel, ConfigDict, validator
 from typing import Optional
 from datetime import datetime
 from app.models.booking import BookingStatus

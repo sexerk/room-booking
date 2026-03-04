@@ -1,11 +1,10 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import datetime
 from app.db.session import get_db
 from app.schemas.booking import Booking, BookingCreate, BookingUpdate, BookingConfirm
-from app.services.booking import BookingService, get_booking_service
-from app.api.deps import get_current_active_user, get_current_admin_user
+from app.services.booking import get_booking_service
+from app.api.deps import get_current_active_user
 from app.models.user import User
 from app.models.booking import BookingStatus
 

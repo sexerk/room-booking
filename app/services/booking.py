@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.booking import BookingRepository
 from app.repositories.room import RoomRepository
 from app.repositories.user import UserRepository
-from app.schemas.booking import BookingCreate, BookingUpdate
+from app.schemas.booking import BookingCreate
 from app.models.booking import Booking, BookingStatus
 from app.core.exceptions import (
     BookingConflictError,

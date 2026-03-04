@@ -3,7 +3,7 @@ from sqlalchemy import select, and_
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.room import Room
-from app.models.amenity import Amenity, room_amenity
+from app.models.amenity import room_amenity
 from app.repositories.base import BaseRepository
 
 

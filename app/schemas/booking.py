@@ -1,16 +1,22 @@
 from pydantic import BaseModel, ConfigDict, validator
-from typing import Optional
 from datetime import datetime
-from app.models.booking import BookingStatus
 from app.schemas.user import UserResponse
 from app.schemas.room import Room
+import enum
+
+class BookingStatus(str, enum.Enum):
+    PENDING = "pending"
+    CONFIRMED = "confirmed"
+    CANCELLED = "cancelled"
+    EXPIRED = "expired"
+    COMPLETED = "completed"
 
 
 class BookingBase(BaseModel):
     room_id: int
     start_time: datetime
     end_time: datetime
-    purpose: Optional[str] = None
+    purpose: str | None = None
 
 
 class BookingCreate(BookingBase):
@@ -23,10 +29,10 @@ class BookingCreate(BookingBase):
 
 
 class BookingUpdate(BaseModel):
-    start_time: Optional[datetime] = None
-    end_time: Optional[datetime] = None
-    purpose: Optional[str] = None
-    status: Optional[BookingStatus] = None
+    start_time: datetime | None = None
+    end_time: datetime | None = None
+    purpose: str | None = None
+    status: BookingStatus | None = None
 
 
 class Booking(BookingBase):
@@ -35,10 +41,10 @@ class Booking(BookingBase):
     status: BookingStatus
     total_price: float
     created_at: datetime
-    updated_at: Optional[datetime]
+    updated_at: datetime | None
 
-    user: Optional[UserResponse] = None
-    room: Optional[Room] = None
+    user: UserResponse | None = None
+    room: Room | None = None
 
     model_config = ConfigDict(from_attributes=True)
 

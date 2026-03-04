@@ -1,4 +1,3 @@
-from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
@@ -7,24 +6,21 @@ from app.schemas.booking import Booking
 from app.schemas.user import UserResponse
 from app.services.booking import get_booking_service
 from app.models.user import User
-from app.models.booking import BookingStatus
+from app.schemas.booking import BookingStatus
 from app.api.deps import get_current_admin_user
 
-router = APIRouter(
-    # prefix="/admin",
-    tags=["admin"]
-)
+router = APIRouter(tags=["admin"])
 
 
-@router.get("/bookings", response_model=List[Booking])
+@router.get("/bookings", response_model=list[Booking])
 async def get_all_bookings(
         skip: int = Query(0, ge=0),
         limit: int = Query(100, ge=1, le=100),
-        user_id: Optional[int] = Query(None),
-        room_id: Optional[int] = Query(None),
-        status: Optional[BookingStatus] = Query(None),
-        start_date: Optional[datetime] = Query(None),
-        end_date: Optional[datetime] = Query(None),
+        user_id: int | None = Query(None),
+        room_id: int | None = Query(None),
+        status: BookingStatus | None = Query(None),
+        start_date: datetime | None = Query(None),
+        end_date: datetime | None = Query(None),
         db: AsyncSession = Depends(get_db),
         current_user: User = Depends(get_current_admin_user)
 ):
@@ -37,11 +33,11 @@ async def get_all_bookings(
     return bookings
 
 
-@router.get("/users", response_model=List[UserResponse])
+@router.get("/users", response_model=list[UserResponse])
 async def get_all_users(
         skip: int = Query(0, ge=0),
         limit: int = Query(100, ge=1, le=100),
-        is_active: Optional[bool] = Query(None),
+        is_active: bool | None = Query(None),
         db: AsyncSession = Depends(get_db),
         current_user: User = Depends(get_current_admin_user)
 ):

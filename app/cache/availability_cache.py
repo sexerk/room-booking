@@ -1,6 +1,5 @@
 import hashlib
 from datetime import datetime
-from typing import Optional
 from app.cache.redis_client import redis_client
 
 
@@ -31,7 +30,7 @@ class AvailabilityCache:
             room_id: int,
             start_time: datetime,
             end_time: datetime
-    ) -> Optional[bool]:
+    ) -> bool | None:
 
         key = self._get_key(room_id, start_time, end_time)
         value = await self.client.get(key)

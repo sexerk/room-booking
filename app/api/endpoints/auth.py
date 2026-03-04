@@ -12,9 +12,7 @@ from app.services.auth import AuthService
 from app.api.deps import get_current_active_user
 from app.models.user import User
 
-router = APIRouter(
-    # prefix="/auth",
-    tags=["auth"])
+router = APIRouter(tags=["auth"])
 
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(

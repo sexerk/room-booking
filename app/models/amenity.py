@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
+from sqlalchemy import Table, ForeignKey, Column, Integer, String
 from app.db.base import Base
-
 
 class Amenity(Base):
     __tablename__ = "amenities"
@@ -17,8 +16,7 @@ class Amenity(Base):
         return f"<Amenity {self.name}>"
 
 
-from sqlalchemy import Table, ForeignKey, Column
-from app.db.base import Base
+
 
 room_amenity = Table(
     "room_amenity",

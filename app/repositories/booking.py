@@ -1,4 +1,3 @@
-from typing import List, Optional
 from datetime import datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
@@ -19,7 +18,7 @@ class BookingRepository(BaseRepository[Booking]):
             room_id: int,
             start_time: datetime,
             end_time: datetime,
-            purpose: Optional[str],
+            purpose: str | None,
             total_price: float,
             status: BookingStatus
     ) -> Booking:
@@ -45,7 +44,7 @@ class BookingRepository(BaseRepository[Booking]):
         )
         return result.scalar_one()
 
-    async def get_with_relations(self, id: int) -> Optional[Booking]:
+    async def get_with_relations(self, id: int) -> Booking | None:
         result = await self.db.execute(
             select(Booking)
             .options(
@@ -61,8 +60,8 @@ class BookingRepository(BaseRepository[Booking]):
             user_id: int,
             skip: int = 0,
             limit: int = 100,
-            status: Optional[BookingStatus] = None
-    ) -> List[Booking]:
+            status: BookingStatus | None = None
+    ) -> list[Booking]:
         query = select(Booking).where(Booking.user_id == user_id)
 
         if status:
@@ -77,9 +76,9 @@ class BookingRepository(BaseRepository[Booking]):
     async def get_room_bookings(
             self,
             room_id: int,
-            start_time: Optional[datetime] = None,
-            end_time: Optional[datetime] = None
-    ) -> List[Booking]:
+            start_time: datetime | None = None,
+            end_time: datetime | None = None
+    ) -> list[Booking]:
         query = select(Booking).where(
             Booking.room_id == room_id,
             Booking.status.in_([BookingStatus.PENDING, BookingStatus.CONFIRMED])
@@ -99,8 +98,8 @@ class BookingRepository(BaseRepository[Booking]):
             room_id: int,
             start_time: datetime,
             end_time: datetime,
-            exclude_booking_id: Optional[int] = None
-    ) -> Optional[Booking]:
+            exclude_booking_id: int | None = None
+    ) -> Booking | None:
         query = select(Booking).where(
             Booking.room_id == room_id,
             Booking.status.in_([BookingStatus.PENDING, BookingStatus.CONFIRMED]),
@@ -114,7 +113,7 @@ class BookingRepository(BaseRepository[Booking]):
         result = await self.db.execute(query)
         return result.scalars().first()
 
-    async def get_expired_pending(self, minutes: int = 15) -> List[Booking]:
+    async def get_expired_pending(self, minutes: int = 15) -> list[Booking]:
         from datetime import timezone
         expire_time = datetime.now(timezone.utc) - timedelta(minutes=minutes)
 

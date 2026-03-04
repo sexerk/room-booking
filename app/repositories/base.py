@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Type, Optional, List
+from typing import Generic, TypeVar, Type
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, delete, func
 from app.db.base import Base
@@ -19,7 +19,7 @@ class BaseRepository(Generic[ModelType]):
         await self.db.refresh(instance)
         return instance
 
-    async def get(self, id: int) -> Optional[ModelType]:
+    async def get(self, id: int) -> ModelType | None:
         result = await self.db.execute(
             select(self.model).where(self.model.id == id)
         )
@@ -29,9 +29,9 @@ class BaseRepository(Generic[ModelType]):
             self,
             skip: int = 0,
             limit: int = 100,
-            order_by: Optional[List] = None,
+            order_by: list | None = None,
             **filters
-    ) -> List[ModelType]:
+    ) -> list[ModelType]:
         query = select(self.model)
 
         for key, value in filters.items():
@@ -46,7 +46,7 @@ class BaseRepository(Generic[ModelType]):
         result = await self.db.execute(query)
         return result.scalars().all()
 
-    async def update(self, id: int, **kwargs) -> Optional[ModelType]:
+    async def update(self, id: int, **kwargs) -> ModelType | None:
         update_data = {k: v for k, v in kwargs.items() if v is not None}
 
         if not update_data:

@@ -1,4 +1,5 @@
-from typing import Optional, Tuple
+from typing import Tuple
+from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.user import UserRepository
 from app.core.security import (
@@ -8,6 +9,7 @@ from app.core.security import (
     create_refresh_token,
     decode_token
 )
+from app.core.config import settings
 from app.core.exceptions import AuthenticationError, PermissionDeniedError
 from app.schemas.auth import RegisterRequest
 from app.models.user import User
@@ -43,7 +45,6 @@ class AuthService:
         return user, access_token, refresh_token
 
     async def login(self, username: str, password: str) -> Tuple[User, str, str]:
-
         user = await self.user_repo.get_by_username(username)
         if not user:
             user = await self.user_repo.get_by_email(username)
@@ -63,7 +64,6 @@ class AuthService:
         return user, access_token, refresh_token
 
     async def refresh_token(self, refresh_token: str) -> Tuple[str, str]:
-
         try:
             payload = decode_token(refresh_token)
 
@@ -84,7 +84,23 @@ class AuthService:
         except Exception as e:
             raise AuthenticationError(f"Invalid refresh token: {str(e)}")
 
-    async def get_current_user(self, user_id: int) -> Optional[User]:
+    async def get_user_from_token(self, token: str) -> User | None:
+        try:
+            payload = jwt.decode(
+                token,
+                settings.SECRET_KEY,
+                algorithms=[settings.ALGORITHM]
+            )
+            user_id = payload.get("sub")
+            if user_id is None:
+                return None
+            user_id = int(user_id)
+        except (JWTError, ValueError, TypeError):
+            return None
+
+        return await self.user_repo.get(user_id)
+
+    async def get_current_user(self, user_id: int) -> User | None:
         return await self.user_repo.get(user_id)
 
 

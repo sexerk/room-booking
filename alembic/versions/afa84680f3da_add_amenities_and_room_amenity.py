@@ -1,4 +1,4 @@
-"""debug
+"""create amenities, rooms, users, bookings tables
 
 Revision ID: afa84680f3da
 Revises: b6ab69916aac

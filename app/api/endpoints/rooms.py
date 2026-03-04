@@ -1,4 +1,3 @@
-from typing import List, Optional
 from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
@@ -8,13 +7,10 @@ from app.services.room import get_room_service
 from app.models.user import User
 from app.api.deps import get_current_admin_user
 
-router = APIRouter(
-    # prefix="/rooms",
-    tags=["rooms"]
-)
+router = APIRouter(tags=["rooms"])
 
 
-@router.get("/", response_model=List[Room])
+@router.get("/", response_model=list[Room])
 async def get_rooms(
         skip: int = Query(0, ge=0, description="Сколько пропустить"),
         limit: int = Query(100, ge=1, le=100, description="Сколько вернуть"),
@@ -25,13 +21,13 @@ async def get_rooms(
     return rooms
 
 
-@router.get("/availability", response_model=List[RoomAvailability])
+@router.get("/availability", response_model=list[RoomAvailability])
 async def check_availability(
         start_time: str = Query(..., description="Начало в формате ISO 8601"),
         end_time: str = Query(..., description="Конец в формате ISO 8601"),
-        capacity_min: Optional[int] = Query(None, ge=1),
-        floor: Optional[int] = Query(None, ge=1),
-        amenity_ids: Optional[List[int]] = Query(None),
+        capacity_min: int | None = Query(None, ge=1),
+        floor: int | None = Query(None, ge=1),
+        amenity_ids: list[int] | None = Query(None),
         db: AsyncSession = Depends(get_db)
 ):
     try:

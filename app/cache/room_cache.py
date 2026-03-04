@@ -1,6 +1,6 @@
 import hashlib
 import json
-from typing import Optional, List, Any
+from typing import List, Any
 from app.cache.redis_client import redis_client
 
 
@@ -25,7 +25,7 @@ class RoomCache:
         hash_str = hashlib.md5(filter_str.encode()).hexdigest()[:8]
         return f"{self.ROOM_LIST_PREFIX}{skip}:{limit}:{hash_str}"
 
-    async def get(self, room_id: int) -> Optional[Any]:
+    async def get(self, room_id: int) -> Any | None:
         key = self._get_room_key(room_id)
         return await self.client.get_json(key)
 
@@ -33,7 +33,7 @@ class RoomCache:
         key = self._get_room_key(room_id)
         return await self.client.set(key, room_data, expire=self.ROOM_TTL)
 
-    async def get_list(self, skip: int, limit: int, **filters) -> Optional[List]:
+    async def get_list(self, skip: int, limit: int, **filters) -> list | None:
         key = self._get_list_key(skip, limit, **filters)
         return await self.client.get_json(key)
 

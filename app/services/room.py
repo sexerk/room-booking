@@ -1,4 +1,3 @@
-from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.room import RoomRepository
 from app.repositories.booking import BookingRepository
@@ -53,11 +52,11 @@ class RoomService:
             self,
             skip: int = 0,
             limit: int = 100,
-            min_capacity: Optional[int] = None,
-            floor: Optional[int] = None,
-            amenity_ids: Optional[List[int]] = None,
+            min_capacity: int | None = None,
+            floor: int | None = None,
+            amenity_ids: list[int] | None = None,
             use_cache: bool = True
-    ) -> List[Room]:
+    ) -> list[Room]:
         if use_cache and not any([min_capacity, floor, amenity_ids]):
             cached = await self.room_cache.get_list(skip, limit)
             if cached is not None:
@@ -132,10 +131,10 @@ class RoomService:
             self,
             start_time: datetime,
             end_time: datetime,
-            min_capacity: Optional[int] = None,
-            floor: Optional[int] = None,
-            amenity_ids: Optional[List[int]] = None
-    ) -> List[Room]:
+            min_capacity: int | None = None,
+            floor: int | None = None,
+            amenity_ids: list[int] | None = None
+    ) -> list[Room]:
         rooms = await self.get_rooms(
             skip=0,
             limit=1000,

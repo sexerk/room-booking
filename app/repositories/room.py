@@ -1,5 +1,4 @@
-from typing import List, Optional
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, func
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.room import Room
@@ -12,7 +11,7 @@ class RoomRepository(BaseRepository[Room]):
     def __init__(self, db: AsyncSession):
         super().__init__(Room, db)
 
-    async def get_with_amenities(self, id: int) -> Optional[Room]:
+    async def get_with_amenities(self, id: int) ->Room | None:
         result = await self.db.execute(
             select(Room)
             .options(selectinload(Room.amenities))
@@ -24,11 +23,11 @@ class RoomRepository(BaseRepository[Room]):
             self,
             skip: int = 0,
             limit: int = 100,
-            min_capacity: Optional[int] = None,
-            floor: Optional[int] = None,
-            amenity_ids: Optional[List[int]] = None
-    ) -> List[Room]:
-        query = select(Room).options(selectinload(Room.amenities)).where(Room.is_active == True)
+            min_capacity: int | None = None,
+            floor: int | None = None,
+            amenity_ids: list[int] | None = None
+    ) -> list[Room]:
+        query = select(Room).options(selectinload(Room.amenities)).where(Room.is_active.is_(True))
 
         if min_capacity:
             query = query.where(Room.capacity >= min_capacity)
@@ -50,7 +49,7 @@ class RoomRepository(BaseRepository[Room]):
         result = await self.db.execute(query)
         return result.scalars().all()
 
-    async def add_amenities(self, room_id: int, amenity_ids: List[int]):
+    async def add_amenities(self, room_id: int, amenity_ids: list[int]):
         room = await self.get(room_id)
         if not room:
             return False
@@ -66,7 +65,7 @@ class RoomRepository(BaseRepository[Room]):
         await self.db.commit()
         return True
 
-    async def remove_amenities(self, room_id: int, amenity_ids: List[int]):
+    async def remove_amenities(self, room_id: int, amenity_ids: list[int]):
         for amenity_id in amenity_ids:
             await self.db.execute(
                 room_amenity.delete().where(

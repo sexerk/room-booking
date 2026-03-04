@@ -1,5 +1,5 @@
 import json
-from typing import Optional, Any
+from typing import Any
 from redis.asyncio import Redis
 from app.core.config import settings
 
@@ -7,7 +7,7 @@ from app.core.config import settings
 class RedisClient:
 
     def __init__(self):
-        self.client: Optional[Redis] = None
+        self.client: Redis | None = None
 
     async def init(self):
         self.client = Redis.from_url(
@@ -32,7 +32,7 @@ class RedisClient:
         except Exception:
             return value
 
-    async def set(self, key: str, value: Any, expire: Optional[int] = None) -> bool:
+    async def set(self, key: str, value: Any, expire: int | None = None) -> bool:
         if not self.client:
             await self.init()
         if isinstance(value, (dict, list)):

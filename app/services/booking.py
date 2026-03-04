@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, timezone
-from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.repositories.booking import BookingRepository
 from app.repositories.room import RoomRepository
@@ -161,8 +160,8 @@ class BookingService:
             user_id: int,
             skip: int = 0,
             limit: int = 100,
-            status: Optional[BookingStatus] = None
-    ) -> List[Booking]:
+            status: BookingStatus | None = None
+    ) -> list[Booking]:
         return await self.booking_repo.get_user_bookings(
             user_id=user_id,
             skip=skip,
@@ -173,7 +172,7 @@ class BookingService:
     async def get_booking(
             self,
             booking_id: int,
-            user_id: Optional[int] = None,
+            user_id: int | None = None,
             is_admin: bool = False
     ) -> Booking:
         booking = await self.booking_repo.get_with_relations(booking_id)
@@ -188,9 +187,9 @@ class BookingService:
     async def get_room_bookings(
             self,
             room_id: int,
-            start_date: Optional[datetime] = None,
-            end_date: Optional[datetime] = None
-    ) -> List[Booking]:
+            start_date: datetime | None = None,
+            end_date: datetime | None = None
+    ) -> list[Booking]:
         return await self.booking_repo.get_room_bookings(
             room_id=room_id,
             start_time=start_date,
@@ -228,7 +227,7 @@ class BookingService:
             room_id: int,
             start_time: datetime,
             end_time: datetime,
-            exclude_booking_id: Optional[int] = None
+            exclude_booking_id: int | None = None
     ):
         conflicting = await self.booking_repo.check_conflict(
             room_id=room_id,
